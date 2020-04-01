@@ -1,20 +1,19 @@
 #' @description Runs PCA and makes biplot based on genotype values 
 #'
 #' @param genos           The $imputed output of A.mat from rrBLUP
-#' @param color_by        How to color the PCA: either "user_defined" specified or based on some "pattern" in the line names
 #' @param linegroups      A data frame, first olumn should be line names and second column specifies the grouping factor to use for coloring
 #' @param pattern         A character vector specifying patterns to find and use for assigning a groupings.. i.e. pattern=c("pat1","pat2","pat3"). Last item is what to call the leftovers w/o a match
 #' @param colors          Optional list of colors to plot with
 #' @param scree           Whether to make a scree plot (T/F)
 #' @param do.plotly       Whether to return the plot as a plotly version. takes longer esp for large data
+#' @param size            Point size
+#' @param alpha           Transparency
+#' @param pch             Point symbols
 #' 
 #' @example 
 #' \dontrun{
 #' 
-#' to install ggplot: 
-#' devtools::install_github("vqv/ggbiplot")
-#' 
-#'   genos_pca(genos=genos$imputed,
+#' genos_pca(genos=genos$imputed,
 #'   color_by="pattern",
 #'   # color_by="user_defined",
 #'   pattern=c("MN17","MN18","MN191","MN192","Founder"),
@@ -33,9 +32,8 @@
 #' @return                a plotly ggplot2 plot
 #' 
 #' 
-genos_pca<-function(genos=genos,
-        color_by=c("pattern"),
-        linegroups=linegroups,
+genos_pca<-function(genos=NULL,
+        linegroups=NULL,
         pattern=c(),
         colors=NULL,
         scree=F,
@@ -44,10 +42,14 @@ genos_pca<-function(genos=genos,
         pch=16,
         alpha=0.5){
   
-
+library(ggbiplot)
+library(tidyverse)
+library(plotly)
+library(viridis) 
+  
 ## Color by genotyping file
     # require a dataframe with 2 columns (line, factor indicating original geno file (i.e. USDA, UMGC, F3))
-if (color_by=="user_defined"){
+if (!is.null(linegroups)){
   
   linegroups %>%
     dplyr::rename(line_name=1, linegroups=2)%>%
@@ -108,7 +110,7 @@ genos %>% as.data.frame() %>%
     # requires a character vector indicating the list of patterns you want to use, detected from line_name
     # (e.g. pattern=c("pattern1","pattern2","pattern3"))
     # the last item should be what to call any leftovers that dont match any of the previous entries
-if (color_by =="pattern"){ #color by pattern is default
+if (is.null(linegroups)){ #color by pattern is default
 
 
   ## Default is color by pattern, if none given, will plot everything as 1 color:  
@@ -223,7 +225,6 @@ for (p in 1:length(pattern)){
 
 ### To Do:
 ####### Test with barley data
-####### Get rid of warning messages:
+####### Get rid of warning message:
 ############ Scale for 'colour' is already present. Adding another scale for 'colour', which will replace the existing scale.
-############ Warning message:  Ignoring unknown aesthetics: text 
-############ Change colors to colorblind friendly?
+############ Warning message:  Ignoring unknown aesthetics: text

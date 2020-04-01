@@ -1,4 +1,4 @@
-#' @description Runs PCA and makes biplot based on genotype values 
+#' @description Calculates MAF within groups and makes histogram(s)
 #'
 #' @param genos           Genotype matrix, where rownames are lines and columns are markers (n x m)
 #' @param linegroups      Dtaframe including lines as first column and their desired grouping factor in the 2nd col
@@ -23,7 +23,17 @@
 #' @example 
 #' \dontrun{
 #' 
-#
+#' maf_histogram(genos=genos_all, linegroups=panel)
+#' 
+#' maf_histogram(genos=genos_all,
+#' overlaid=TRUE,
+#' pattern=c("MN17","MN18","MN191","MN192","Founders"),
+#' MAFcutoff=0.01,
+#' colors=c("red","blue","darkgreen","purple","black"),
+#' do.plotly=TRUE,
+#' alpha=0.5
+#' binwidth=0.01) 
+#'
 #' }
 #'   
 #'@import tidyverse
